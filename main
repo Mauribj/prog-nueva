@@ -1,0 +1,280 @@
+#include <Arduino.h>
+int a = 0;
+int tecla, tempset;
+int h = 0;
+int x = 1;
+int c = 0, r;
+int medicion[20];
+int mes[20];
+int temporizador = 0;
+void setup() {
+  Serial.begin(9600);
+  a = 1;
+}
+void loop() {
+  switch (a) {
+    //Comprueba que el Puerto Serial Funciona
+    case  1:
+      Serial.println("Inicio");
+      delay(1000);
+      a = 2;
+      break;
+    case 2:
+    //Eleccion de Nueva Medición o ver los Registros
+      Serial.println("*************************");
+      Serial.println("**   Menu Principal    **");
+      Serial.println("*************************");
+      Serial.println("-Iniciar medicion- S");
+      Serial.println("-Registros- D");
+      x = 1;
+      while (x == 1) {
+        tecla = Serial.read();
+        if (tecla == 100) { // D Enter
+          a = 10;
+          x = 0;
+        }
+        if (tecla == 115) { // S Abajo
+          a = 3;
+          x = 0;
+        }
+      }
+      break;
+
+    //Da Inicio a la Medición
+    case 3:
+      Serial.println("*************************");
+      Serial.println("Iniciar Nueva Medición");
+      Serial.println("D continuar | A volver");
+      x = 1;
+      while (x == 1) {
+        tecla = Serial.read();
+        if (tecla == 100) { //enter
+          a = 4;
+          x = 0;
+        }
+        if (tecla == 97) {
+          a = 2;
+          x = 0;
+        }
+      }
+      break;
+
+    case  4:
+    //Pide Ingresar un Mes de tratamiento
+      Serial.println("*************************");
+      Serial.println("Ingrese el mes de tratamiento:");
+      Serial.println("D continuar | A volver");
+      Serial.println("+/- W/S suma/resta 5");
+      Serial.println(mes[c]);
+      x = 1;
+      while (x == 1) {
+        tecla = Serial.read();
+        if (tecla == 43) {
+          mes[c] = mes[c] + 1;
+          Serial.println(mes[c]);     // con el signo + suma de a 1
+        }
+        if (tecla == 45) {
+          if (mes[c] > 0) {
+            mes[c] = mes[c] - 1;
+            Serial.println(mes[c]);     //con el signo - resta de a 1
+          } else {
+            mes[c] = 0;
+            Serial.println(mes[c]);
+          }
+        }
+        if (tecla == 100) {         // enter
+          a = 5;
+          x = 0;
+        }
+        if (tecla == 119) {         // tecla W suma de 5
+          mes[c] = mes[c] + 5;
+          Serial.println(mes[c]);
+        }
+        if (tecla == 115) {
+          if (mes[c] > 0) {
+            mes[c] = mes[c] - 5;            // tecla S resta de 5
+            Serial.println(mes[c]);
+          } else {
+            mes[c] = 0;
+            Serial.println(mes[c]);
+          }
+        }
+        if (tecla == 97) {
+          a = 3;
+          x = 0;
+        }
+      }
+      delay(1000);
+      break;
+
+    case 5:
+      //Pide elegir el tiempo en el que se  va a ser la prueba
+      temporizador = 0;
+      Serial.println("*************************");
+      Serial.println("Seleccione tiempo de Medición");
+      Serial.println("D continuar | A volver");
+      Serial.println("+/- W/S suma/resta 5");
+      Serial.println(temporizador);
+      x = 1;
+      while (x == 1) {
+        tecla = Serial.read();
+        if (tecla == 43) {
+          temporizador = temporizador + 1;
+          Serial.println(temporizador);     // con el signo + suma de a 1
+        }
+        if (tecla == 45) {
+          if (temporizador > 0) {
+            temporizador = temporizador - 1;
+            Serial.println(temporizador);     //con el signo - resta de a 1
+          } else {
+            temporizador = 0;
+            Serial.println(temporizador);
+          }
+        }
+        if (tecla == 119) {                   //arriba
+          temporizador = temporizador + 5;    //suma de a 5
+          Serial.println(temporizador);
+        }
+        if (tecla == 115) {                   //abajo
+          if (temporizador > 0) {               //resta de a 5
+            temporizador = temporizador - 5;
+            Serial.println(temporizador);
+          } else {
+            temporizador = 0;
+            Serial.println(temporizador);
+          }
+        }
+        if (tecla == 100) {
+          a = 6;
+          x = 0;
+        }
+        if (tecla == 97) {
+          a = 4;
+          x = 0;
+        }
+      }
+      delay(1000);
+      break;
+
+    //Comienza la Medición
+    case 6:
+      Serial.println("*************************");
+      Serial.println("¿Comenzar Medición? D - Si | A - No");
+      x = 1;
+      while (x == 1) {
+        tecla = Serial.read();
+
+        if (tecla == 100) {
+          a = 7;
+          x = 0;
+        }
+        if (tecla == 97) {
+          a = 5;
+          x = 0;
+        }
+      }
+      break;
+
+    //Estire del agarre brindado
+    case 7:
+      Serial.println("*************************");
+      Serial.println("Tire del Agarre en:");
+      h = 3;
+      Serial.println(h);
+      delay(1000);
+      h = 2;
+      Serial.println(h);
+      delay(1000);
+      h = 1;
+      Serial.println(h);
+      delay(1000);
+      a = 8;
+      break;
+
+    //Serial.print(medicion);
+    //Tiempo elegido
+    case 8:
+      tempset = temporizador;
+      Serial.println("Temporizador:");
+      for (int e = 0; e < temporizador; e++) {
+        Serial.println(tempset);
+        tempset--;
+        delay(1000);
+      }
+      delay(1000);
+      a = 9;
+      break;
+
+    //
+    case 9:
+      Serial.println("*************************");
+      Serial.println("Mes de Revisión: ");
+      Serial.println(mes[c]);
+      Serial.println("Medicion: ");
+      Serial.println(medicion[c]);
+      Serial.println("Presione D para volver al menú");
+      x = 1;
+      c++;
+      while (x == 1) {
+        tecla = Serial.read();
+
+        if (tecla == 100) {
+          a = 2;
+          x = 0;
+        }
+      }
+      delay(1000);
+      break;
+
+    //
+    case 10:
+      r = 0;
+      Serial.println("*************************");
+      Serial.println("Registros:");
+      Serial.println("S/W subir/bajar | A volver");
+      Serial.println("Mes de Revisión: ");
+      Serial.println(mes[r]);
+      Serial.println("Medicion: ");
+      Serial.println(medicion[r]);
+      x = 1;
+      while (x == 1) {
+        tecla = Serial.read();
+        if (tecla == 97) {
+          a = 2;
+          x = 0;
+        }
+        if (tecla == 119) {
+          r = r + 1;
+          Serial.println("*************************");
+          Serial.println("Registros:");
+          Serial.println("S/W subir/bajar | A volver");
+          Serial.println("Mes de Revisión: ");
+          Serial.println(mes[r]);
+          Serial.println("Medicion: ");
+          Serial.println(medicion[r]);
+        }
+        if (tecla == 115) {
+          if (r > 0) {
+            r = r - 1;
+            Serial.println("*************************");
+          Serial.println("Registros:");
+          Serial.println("S/W subir/bajar | A volver");
+          Serial.println("Mes de Revisión: ");
+          Serial.println(mes[r]);
+          Serial.println("Medicion: ");
+          Serial.println(medicion[r]);
+          } else {
+            r = 0;
+            Serial.println("*************************");
+          Serial.println("Registros:");
+          Serial.println("S/W subir/bajar | A volver");
+          Serial.println("Mes de Revisión: ");
+          Serial.println(mes[r]);
+          Serial.println("Medicion: ");
+          Serial.println(medicion[r]);
+          }
+        }
+      }
+      break;
+  }
+}

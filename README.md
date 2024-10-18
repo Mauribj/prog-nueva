@@ -1,1 +1,2 @@
 # hola pelado
+bluetooth

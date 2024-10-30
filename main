@@ -3,7 +3,8 @@
 #define LED 22
 float m[100];
 float weightA128, aux;
-int p;
+int p, n;
+int rompe;
 int a = 0;
 int tecla, tempset, blutu;
 int h = 0;
@@ -47,33 +48,70 @@ void setup()
   long zero_factor = bascula.read_average();
   // Mostrar la primera desviación
   a = 1;
+  n = 1;
 
   digitalWrite(25, HIGH);
 }
 void loop()
 {
-  while(1){
-  Serial.println("Seleccione el dispositivo a usar:");
-  Serial.println("Escriba celu o pc, en minusculas");
-  Serial1.println("Seleccione el dispositivo a usar:");
-  Serial1.println("Escriba celu o pc, en minusculas");
-  tecla = Serial.read();  // Lee el terminal de la PC
-  blutu = Serial1.read(); // Lee el terminal de Bluetooth
-  delay(1500);
-  if (blutu == 99)
+  switch (n)
   {
+  case 1:
+    Serial.println("Seleccione el dispositivo a usar:");
+    Serial.println("Escriba celu o pc, en minusculas");
+    Serial1.println("Seleccione el dispositivo a usar:");
+    Serial1.println("Escriba celu o pc, en minusculas");
+    tecla = Serial.read();  // Lee el terminal de la PC
+    blutu = Serial1.read(); // Lee el terminal de Bluetooth
+    delay(1500);
+    n = 2;
+    break;
+  case 2:
     while (1)
     {
-      Celular();
+      a = 1;
+      rompe = 1;
+      Serial.println("Seleccione el dispositivo a usar:");
+      Serial.println("Escriba celu o pc, en minusculas");
+      Serial1.println("Seleccione el dispositivo a usar:");
+      Serial1.println("Escriba celu o pc, en minusculas");
+      tecla = Serial.read();  // Lee el terminal de la PC
+      blutu = Serial1.read(); // Lee el terminal de Bluetooth
+      delay(1500);
+      if (blutu == 99 && 101 && 108 && 117)
+      {
+        Serial1.println("se selecciono el celular");
+        while (rompe == 1)
+        {
+          Celular();
+        }
+      }
+      if (tecla == 112 && 99)
+      {
+        Serial1.println("se selecciono el pc");
+        while (rompe == 1)
+        {
+          PC();
+        }
+      }
+      if (blutu == 112 && 99)
+      {
+        Serial1.println("se selecciono el pc");
+        while (rompe == 1)
+        {
+          PC();
+        }
+      }
+      if (tecla == 99 && 101 && 108 && 117)
+      {
+        Serial.println("se selecciono el celular");
+        while (rompe == 1)
+        {
+          Celular();
+        }
+      }
     }
-  }
-  else if (tecla == 112 && 99)
-  {
-    while (1)
-    {
-      PC();
-    }
-  }
+    break;
   }
 }
 
@@ -88,8 +126,9 @@ void Celular()
     Serial1.println("*************************");
     Serial1.println("**   Menu Principal    **");
     Serial1.println("*************************");
-    Serial1.println("-Iniciar medicion- s");
-    Serial1.println("-Registros- d");
+    Serial1.println("-Iniciar medicion- 's'");
+    Serial1.println("-Registros- 'd'");
+    Serial1.println("-Salir- 't'");
     a = 2;
   case 2:
     tecla = Serial1.read();
@@ -120,6 +159,19 @@ void Celular()
       a = 3;
       x = 0;
     }
+    if (tecla == 116)
+    { // A Salir
+      Serial.println("Seleccione el dispositivo a usar:");
+      Serial.println("Escriba celu o pc, en minusculas");
+      Serial1.println("Seleccione el dispositivo a usar:");
+      Serial1.println("Escriba celu o pc, en minusculas");
+      tecla = Serial.read();  // Lee el terminal de la PC
+      blutu = Serial1.read(); // Lee el terminal de Bluetooth
+      n = 1;
+      rompe = 0;
+      goto exit;
+    }
+    exit:
     break;
   // Se registra al usuario
   case 3:
@@ -559,6 +611,7 @@ void PC()
     Serial.println("*************************");
     Serial.println("-Iniciar medicion- s");
     Serial.println("-Registros- d");
+    Serial.println("-Salir- t");
     a = 2;
   case 2:
     tecla = Serial.read();
@@ -589,6 +642,19 @@ void PC()
       a = 3;
       x = 0;
     }
+    if (tecla == 116)
+    { // A Salir
+      Serial.println("Seleccione el dispositivo a usar:");
+      Serial.println("Escriba celu o pc, en minusculas");
+      Serial1.println("Seleccione el dispositivo a usar:");
+      Serial1.println("Escriba celu o pc, en minusculas");
+      tecla = Serial.read();  // Lee el terminal de la PC
+      blutu = Serial1.read(); // Lee el terminal de Bluetooth
+      n = 1;
+      rompe = 0;
+      goto exit;
+    }
+    exit:
     break;
   // Se registra al usuario
   case 3:
